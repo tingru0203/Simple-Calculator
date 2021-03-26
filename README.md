@@ -1,6 +1,6 @@
 # Introduction-to-programmingII_mini-project-1
 Simple Calculator (output assembly code)
-### SPEC
+### Introduction
 
 CPU: Eight 32-bit registers r0-r7. 256-byte memory.
 
