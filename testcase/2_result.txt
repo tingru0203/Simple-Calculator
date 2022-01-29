@@ -1,0 +1,8 @@
+EXIT | CONST: 1    |             | 20cc   |
+-------------------------------------------
+the expression cannot be evaluated
+
+r[0] = 1976487104
+r[1] = -2135873789
+r[2] = -2
+Total clock cycles are 20

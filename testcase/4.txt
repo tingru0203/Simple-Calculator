@@ -1,0 +1,14 @@
+x = 100+10*y
+y = z+100*10/50*10
+z = 10*x/100
+xx = x
+yy = y
+zz = z
+x = xx ^x
+y=yy|y
+z = zz&z
+a=b=c=d=3*(1+2)
+a = -(b+c+d)
+++b
+c = --d
+x = x + a + b + c + d

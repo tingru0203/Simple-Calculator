@@ -1,0 +1,17 @@
+MOV  | REG  : 0    | ADDR : 0    | 200cc  |
+MOV  | REG  : 1    | ADDR : 4    | 200cc  |
+MOV  | REG  : 2    | ADDR : 8    | 200cc  |
+MOV  | REG  : 0    | CONST: 8    | 10cc   |
+MOV  | REG  : 1    | CONST: 10   | 10cc   |
+MOV  | REG  : 2    | CONST: 1    | 10cc   |
+MOV  | REG  : 1    | CONST: 0    | 10cc   |
+MOV  | REG  : 2    | CONST: 2    | 10cc   |
+MOV  | REG  : 1    | CONST: 102  | 10cc   |
+EXIT | CONST: 0    |             | 20cc   |
+-------------------------------------------
+exit normally
+
+r[0] = 8
+r[1] = 102
+r[2] = 2
+Total clock cycles are 680

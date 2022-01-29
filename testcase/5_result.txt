@@ -1,0 +1,149 @@
+MOV  | REG  : 0    | ADDR : 0    | 200cc  |
+MOV  | REG  : 1    | ADDR : 4    | 200cc  |
+MOV  | REG  : 2    | ADDR : 8    | 200cc  |
+MOV  | REG  : 3    | REG  : 0    | 10cc   |
+MUL  | REG  : 3    | REG  : 1    | 30cc   |
+MUL  | REG  : 3    | REG  : 2    | 30cc   |
+MOV  | REG  : 4    | CONST: 1    | 10cc   |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 12   | REG  : 3    | 200cc  |
+MOV  | ADDR : 16   | REG  : 3    | 200cc  |
+MOV  | ADDR : 20   | REG  : 3    | 200cc  |
+MOV  | ADDR : 24   | REG  : 3    | 200cc  |
+MOV  | ADDR : 28   | REG  : 3    | 200cc  |
+MOV  | ADDR : 32   | REG  : 3    | 200cc  |
+MOV  | ADDR : 36   | REG  : 3    | 200cc  |
+MOV  | ADDR : 40   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+AND  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 44   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+OR   | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 48   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+XOR  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 52   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 44   | 200cc  |
+MOV  | REG  : 4    | ADDR : 48   | 200cc  |
+MUL  | REG  : 3    | REG  : 4    | 30cc   |
+MOV  | REG  : 4    | ADDR : 52   | 200cc  |
+MUL  | REG  : 3    | REG  : 4    | 30cc   |
+MOV  | ADDR : 56   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+MUL  | REG  : 3    | REG  : 4    | 30cc   |
+MOV  | REG  : 4    | ADDR : 32   | 200cc  |
+MOV  | REG  : 5    | ADDR : 28   | 200cc  |
+MUL  | REG  : 4    | REG  : 5    | 30cc   |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 24   | 200cc  |
+MOV  | REG  : 5    | ADDR : 20   | 200cc  |
+DIV  | REG  : 4    | REG  : 5    | 50cc   |
+MOV  | REG  : 5    | ADDR : 16   | 200cc  |
+MOV  | REG  : 6    | ADDR : 12   | 200cc  |
+DIV  | REG  : 5    | REG  : 6    | 50cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MUL  | REG  : 3    | REG  : 4    | 30cc   |
+MOV  | ADDR : 60   | REG  : 3    | 200cc  |
+MOV  | REG  : 3    | ADDR : 44   | 200cc  |
+MOV  | REG  : 4    | CONST: 1    | 10cc   |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 44   | REG  : 3    | 200cc  |
+MOV  | REG  : 4    | ADDR : 48   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 48   | REG  : 4    | 200cc  |
+SUB  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 52   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+SUB  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 52   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 56   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 56   | REG  : 4    | 200cc  |
+SUB  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 60   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+SUB  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 60   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 0    | REG  : 3    | 10cc   |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | CONST: 1    | 10cc   |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | ADDR : 40   | REG  : 3    | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 36   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 32   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 32   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 28   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 28   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 24   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 24   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 20   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 20   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 16   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 16   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 12   | 200cc  |
+MOV  | REG  : 5    | CONST: 1    | 10cc   |
+ADD  | REG  : 4    | REG  : 5    | 10cc   |
+MOV  | ADDR : 12   | REG  : 4    | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 1    | REG  : 3    | 10cc   |
+MOV  | REG  : 3    | ADDR : 40   | 200cc  |
+MOV  | REG  : 4    | ADDR : 36   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 32   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 28   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 24   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 20   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 16   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 12   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 44   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 48   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 52   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 56   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 4    | ADDR : 60   | 200cc  |
+ADD  | REG  : 3    | REG  : 4    | 10cc   |
+MOV  | REG  : 2    | REG  : 3    | 10cc   |
+EXIT | CONST: 0    |             | 20cc   |
+-------------------------------------------
+exit normally
+
+r[0] = 1
+r[1] = 16
+r[2] = 23
+Total clock cycles are 15330
