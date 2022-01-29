@@ -55,7 +55,28 @@ EXIT 0
 
 ## Implementation
 #### Lexical analyzer
+* Recognize which strings of symbols from the source program represent a single entity called token.
+* Token's type:
+```
+typedef enum {
+    UNKNOWN, END, ENDFILE,
+    INT, ID,
+    ADDSUB, MULDIV, LOGICAL,
+    INCDEC, ASSIGN,
+    LPAREN, RPAREN
+} TokenSet;
+```
 
 #### Parser
+Consturct a syntax tree according to the grammar.
 
 #### Code generator
+* Generate assembly code during the tree traversal.
+* Some optimization to reduce the total clock cycles:
+1. 一開始將variable x, y, z存到r0, r1, r2，之後用到x, y, z時直接拿r0, r1, r2運算；其他新增的variable則存在memory中，要用時先移到register再運算
+2. 若root為variable(ID)，且其值已知，則將root改為INT
+3. 若root為等號(ASSIGN)，將root改為left的ID
+4. 若root為operator(ADDSUB, MULDIV, LOGICAL)，且left, right皆為INT，則算出結果並將root改為INT
+
+## OJ link
+http://140.114.86.238/problem/12756/
