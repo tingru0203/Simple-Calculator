@@ -39,7 +39,7 @@ TokenSet getToken(void) {
     int i = 0;
     char c = '\0';
 
-    while ((c = fgetc(stdin)) == ' ' || c == '\t');
+    while ((c = fgetc(stdin)) == ' ' || c == '\t'); // skip space
 
     if (isdigit(c)) {
         lexeme[0] = c;
@@ -125,7 +125,7 @@ typedef enum {
 } ErrorType;
 // Structure of the symbol table
 typedef struct {
-    int change;
+    int change; // value assigned or not
     int val;
     char name[MAXLEN];
 } Symbol;
@@ -136,8 +136,8 @@ typedef struct _Node {
     struct _Node *left;
     struct _Node *right;
 } BTNode;
-//register
-int reg[8] = {1, 1, 1, 1, 1, 1, 1, 1}; // register on or off
+// register
+int reg[8] = {1, 1, 1, 1, 1, 1, 1, 1}; // register available or not
 // The symbol table
 Symbol table[TBLSIZE];
 // Initialize the symbol table with builtin variables
@@ -162,7 +162,7 @@ char* printAssemblyCode(BTNode *root);
 // Print error message and exit the program
 void err(ErrorType errorNum);
 
-int sbcount = 0;
+int sbcount = 0; // number of symbol in the table
 Symbol table[TBLSIZE];
 
 void initTable(void) {
@@ -235,15 +235,15 @@ void freeTree(BTNode *root) {
 BTNode *factor(void) {
     BTNode *retp = NULL, *left = NULL;
 
-    if (match(INT)) {
+    if (match(INT)) { // INT
         retp = makeNode(INT, getLexeme());
         advance();
     } else if (match(ID)) {
         left = makeNode(ID, getLexeme());
         advance();
-        if (!match(ASSIGN)) {
+        if (!match(ASSIGN)) { // ID
             retp = left;
-        } else {
+        } else { // ID ASSIGN expr
             retp = makeNode(ASSIGN, getLexeme());
             advance();
             retp->left = left;
@@ -253,16 +253,16 @@ BTNode *factor(void) {
         retp = makeNode(ADDSUB, getLexeme());
         retp->left = makeNode(INT, "0");
         advance();
-        if (match(INT)) {
+        if (match(INT)) { // ADDSUB INT
             retp->right = makeNode(INT, getLexeme());
             advance();
-        } else if (match(ID)) {
+        } else if (match(ID)) { // ADDSUB ID
             retp->right = makeNode(ID, getLexeme());
             advance();
         } else if (match(LPAREN)) {
             advance();
             retp->right = expr();
-            if (match(RPAREN))
+            if (match(RPAREN)) // ADDSUB LPAREN expr RPAREN
                 advance();
             else
                 error(MISPAREN);
@@ -272,15 +272,16 @@ BTNode *factor(void) {
     } else if (match(LPAREN)) {
         advance();
         retp = expr();
-        if (match(RPAREN))
+        if (match(RPAREN)) // LPAREN expr RPAREN
             advance();
         else
             error(MISPAREN);
     } else if(match(INCDEC)) {
+        // ID = ID ADDSUB 1
         retp = makeNode(ASSIGN, "=");
         retp->right = makeNode(ADDSUB, getLexeme());
         advance();
-        if(match(ID)) {
+        if(match(ID)) { // INCDEC ID
             retp->left = makeNode(ID, getLexeme());
             retp->right->left = makeNode(ID, getLexeme());
             retp->right->right = makeNode(INT, "1");
@@ -353,6 +354,7 @@ void statement(void) {
     } else {
         retp = expr();
         if (match(END)) {
+            // find ASSIGN
             while(retp!=NULL && retp->data != ASSIGN) {
                 retp = retp->right;
             }
@@ -360,7 +362,7 @@ void statement(void) {
                 char regIdx[5];
                 strcpy(regIdx, printAssemblyCode(retp));
                 if(regIdx[0]=='r')
-                    reg[regIdx[1]-'0'] = 1;
+                    reg[regIdx[1]-'0'] = 1; // release register
                 freeTree(retp);
             }
             advance();
@@ -407,49 +409,37 @@ void err(ErrorType errorNum) {
 /* code generator */
 char ret[50];
 
-//int to string
+// int to string
 void itos(int n, char* s) {
-    int num = n, cnt = 0;
+    int num = n, cnt = 0, neg = 0;
     if(n < 0) {
+        neg = 1;
         s[0] = '-';
         n *= -1;
-        do {
-            num/=10;
-            cnt++;
-        }
-        while(num != 0);
-        for(int j = 0; j < cnt;j ++) {
-            s[cnt-j] = n%10+'0';
-            n/=10;
-        }
-        s[cnt+1]='\0';
     }
-    else {
-        do {
-            num/=10;
-            cnt++;
-        }
-        while(num != 0);
-        for(int j = 0; j < cnt;j ++) {
-            s[cnt-j-1] = n%10+'0';
-            n/=10;
-        }
-        s[cnt]='\0';
+    do {
+        num /= 10;
+        cnt++;
+    } while(num != 0);
+    for(int j = cnt-1; j >= 0; j--) {
+        s[j+neg] = n%10+'0';
+        n /= 10;
     }
+    s[cnt+neg]='\0';
 }
 
+// find the variable defined in the table
 int findVariable(BTNode* root) {
-    int i;
-    for(i = 0; i < sbcount; i++) {
+    for(int i = 0; i < sbcount; i++) {
         if(strcmp(root->lexeme, table[i].name) == 0)
             return i;
     }
     err(NOTFOUND);
 }
 
+// find an available register
 int findRegister(BTNode* root) {
-    int i;
-    for(i = 3; i < MAXREG; i++) {
+    for(int i = 3; i < MAXREG; i++) {
         if(reg[i]) {
             reg[i] = 0;
             return i;
@@ -459,49 +449,69 @@ int findRegister(BTNode* root) {
 }
 
 void printOP(BTNode* root, int r1, int r2) {
-    if (root->lexeme[0] == '+')
-        printf("ADD r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '-')
-        printf("SUB r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '*')
-        printf("MUL r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '/')
-        printf("DIV r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '&')
-        printf("AND r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '|')
-        printf("OR r%d r%d\n", r1, r2);
-    else if (root->lexeme[0] == '^')
-        printf("XOR r%d r%d\n", r1, r2);
+    switch(root->lexeme[0]) {
+        case '+':
+            printf("ADD r%d r%d\n", r1, r2);
+            break;
+        case '-':
+            printf("SUB r%d r%d\n", r1, r2);
+            break;
+        case '*':
+            printf("MUL r%d r%d\n", r1, r2);
+            break;
+        case '/':
+            printf("DIV r%d r%d\n", r1, r2);
+            break;
+        case '&':
+            printf("AND r%d r%d\n", r1, r2);
+            break;
+        case '|':
+            printf("OR r%d r%d\n", r1, r2);
+            break;
+        case '^':
+            printf("XOR r%d r%d\n", r1, r2);
+            break;
+    }
 }
 
 void INT_INT(BTNode* root, char* left, char* right) {
     // root->data: from OP to INT
     root->data = INT;
+
     // root->lexeme = INT OP INT
-    if (root->lexeme[0] == '+')
-        itos(atoi(left) + atoi(right), root->lexeme);
-    else if (root->lexeme[0] == '-')
-        itos(atoi(left) - atoi(right), root->lexeme);
-    else if (root->lexeme[0] == '*')
-        itos(atoi(left) * atoi(right), root->lexeme);
-    else if (root->lexeme[0] == '/') {
-        if (right[0]=='0')
-            err(DIVZERO);
-        itos(atoi(left) / atoi(right), root->lexeme);
+    switch(root->lexeme[0]) {
+        case '+':
+            itos(atoi(left) + atoi(right), root->lexeme);
+            break;
+        case '-':
+            itos(atoi(left) - atoi(right), root->lexeme);
+            break;
+        case '*':
+            itos(atoi(left) * atoi(right), root->lexeme);
+            break;
+        case '/':
+            if (right[0]=='0')
+                err(DIVZERO);
+            itos(atoi(left) / atoi(right), root->lexeme);
+            break;
+        case '&':
+            itos(atoi(left) & atoi(right), root->lexeme);
+            break;
+        case '|':
+            itos(atoi(left) | atoi(right), root->lexeme);
+            break;
+        case '^':
+            itos(atoi(left) ^ atoi(right), root->lexeme);
+            break;
     }
-    else if (root->lexeme[0] == '&')
-        itos(atoi(left) & atoi(right), root->lexeme);
-    else if (root->lexeme[0] == '|')
-        itos(atoi(left) | atoi(right), root->lexeme);
-    else if (root->lexeme[0] == '^')
-        itos(atoi(left) ^ atoi(right), root->lexeme);
 }
 
 int p = 0;
 
+// return INT or register
 char* printAssemblyCode(BTNode *root) {
-    if(p==0) {
+    // first, move x, y, z to r0, r1, r2 (can direct use r0, r1, r2 later)
+    if(p == 0) {
         printf("MOV r0 [0]\nMOV r1 [4]\nMOV r2 [8]\n");
         p++;
     }
@@ -512,20 +522,21 @@ char* printAssemblyCode(BTNode *root) {
     switch (root->data) {
         case ID:
             i = findVariable(root);
-            if(table[i].change) {
+            if(table[i].change) { // ID's value is known
                 // root: from ID to INT
-                root->data = INT;
-                itos(table[i].val, root->lexeme);
+                root->data = INT; // change root->data
+                itos(table[i].val, root->lexeme); // change root->lexeme
                 // return INT
                 strcpy(ret, root->lexeme);
             }
-            else if(i==0 || i==1 || i==2) {
+            else if(i <= 2) { // ID's value is unknown & ID is x, y, z
                 // return reg(root)
                 ret[0] = 'r';
                 ret[1] = i+'0';
                 ret[2] = '\0';
             }
-            else {
+            else { // ID's value is unknown & ID is other variable
+                // find a new register to store ID
                 j = findRegister(root);
                 // MOV reg(new) mem(root)
                 printf("MOV r%d [%d]\n", j, i*4);
@@ -535,38 +546,41 @@ char* printAssemblyCode(BTNode *root) {
                 ret[2] = '\0';
             }
             break;
-        case INT: //return INT
+
+        case INT: // return INT
             strcpy(ret, root->lexeme);
             break;
-        case ASSIGN:
+
+        case ASSIGN: // return register
             strcpy(right, printAssemblyCode(root->right));
 
+            // set left to 0
             setval(root->left->lexeme, 0, 0);
             i = findVariable(root->left);
             // change root from ASSIGN to ID(left)
             root->data = ID;
             strcpy(root->lexeme, root->left->lexeme);
-            if(right[0] == 'r') { // right is not INT
+
+            if(right[0] == 'r') { // right is not INT (unknown)
                 if(root->right->data == ID) {
                     j = findVariable(root->right);
                     if(table[j].change) {
-                        //change root's value
+                        // change root's value
                         setval(root->lexeme, table[j].val, 1);
                     }
                 }
-                root->left = NULL;
-                root->right = NULL;
-                if(i==0 || i==1 || i==2) // MOV reg(left) reg(right)
+                root->left = root->right = NULL;
+                if(i <= 2) // MOV reg(left) reg(right)
                     printf("MOV r%d %s\n", i, right);
                 else // MOV mem(left) reg(right)
                     printf("MOV [%d] %s\n", i*4, right);
                 // return reg(right)
                 strcpy(ret, right);
             }
-            else { // right is INT
-                //change root's value
+            else { // right is INT (known)
+                // change root's value
                 setval(root->lexeme, atoi(right), 1);
-                if(i==0 || i==1 || i==2) {
+                if(i <= 2) { // left is x, y, z
                     // MOV reg(left) reg(right)
                     printf("MOV r%d %s\n", i, right);
                     // return reg(left)
@@ -574,7 +588,7 @@ char* printAssemblyCode(BTNode *root) {
                     ret[1] = i+'0';
                     ret[2] = '\0';
                 }
-                else  {
+                else  { // left is other variable
                     j = findRegister(root);
                     // MOV reg(new) INT(right)
                     printf("MOV r%d %s\n", j, right);
@@ -587,10 +601,11 @@ char* printAssemblyCode(BTNode *root) {
                 }
             }
             break;
+
         case ADDSUB:
         case MULDIV:
         case LOGICAL:
-            if(root->left->data==ID && root->right->data!=ID) {
+            if(root->left->data==ID && root->right->data!=ID) { // right subtree may be big, so handle right subtree first
                 strcpy(right, printAssemblyCode(root->right));
                 strcpy(left, printAssemblyCode(root->left));
             }
@@ -601,12 +616,13 @@ char* printAssemblyCode(BTNode *root) {
 
             /* INT OP INT */
             if(root->left->data==INT && root->right->data==INT) {
+                // calculate INT OP INT
                 INT_INT(root, left, right);
                 // return INT
                 strcpy(ret, root->lexeme);
             }
             /* INT OP reg */
-            else if(root->left->data==INT) {
+            else if(root->left->data==INT) { // find a new register to store the result and release the right register
                 i = findRegister(root);
                 // MOV reg(new) INT(left)
                 printf("MOV r%d %s\n", i, left);
@@ -621,12 +637,12 @@ char* printAssemblyCode(BTNode *root) {
             }
             /* reg OP INT */
             else if(root->right->data==INT) {
-                if (root->lexeme[0] == '/' && right[0]=='0')
+                if (root->lexeme[0] == '/' && right[0]=='0') // check divide zero
                     err(DIVZERO);
-                i = findRegister(root);
+                i = findRegister(root); // find a new register for right
                 // MOV reg(new) INT(right)
                 printf("MOV r%d %s\n", i, right);
-                if(left[1]=='0' || left[1]=='1' || left[1]=='2') {
+                if(left[1]=='0' || left[1]=='1' || left[1]=='2') { // left is x, y, z: find a new register to store the result
                     j = findRegister(root);
                     // MOV reg(new) reg(left)
                     printf("MOV r%d %s\n", j, left);
@@ -637,7 +653,7 @@ char* printAssemblyCode(BTNode *root) {
                     ret[1] = j+'0';
                     ret[2] = '\0';
                 }
-                else {
+                else { // left is other variable
                     // OP reg(left) reg(new)
                     printOP(root, left[1]-'0', i);
                     // return r(left)
@@ -648,18 +664,18 @@ char* printAssemblyCode(BTNode *root) {
             }
             /* reg OP reg */
             else {
-                if(left[1]=='0' || left[1]=='1' || left[1]=='2') {
+                if(left[1]=='0' || left[1]=='1' || left[1]=='2') { // left is x, y, z: find a new register to store the result
                     i = findRegister(root);
                     // MOV reg(new) reg(left)
                     printf("MOV r%d %s\n", i, left);
-                    // OP reg(new) reg(new)
+                    // OP reg(new) reg(right)
                     printOP(root, i, right[1]-'0');
                     // return r(new)
                     ret[0] = 'r';
                     ret[1] = i+'0';
                     ret[2] = '\0';
                 }
-                else {
+                else { // left is other variable
                     // OP reg(left) reg(right)
                     printOP(root, left[1]-'0', right[1]-'0');
                     // return r(left)
@@ -675,7 +691,6 @@ char* printAssemblyCode(BTNode *root) {
     return ret;
 }
 
-
 int main() {
     freopen("input.txt", "w", stdout);
     initTable();
@@ -684,4 +699,3 @@ int main() {
     }
     return 0;
 }
-
